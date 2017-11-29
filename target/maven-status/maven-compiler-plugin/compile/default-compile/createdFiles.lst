@@ -1,0 +1,11 @@
+cadelac/framework/pubsub/BusChannel.class
+cadelac/framework/pubsub/BusConfig.class
+cadelac/framework/pubsub/message/PacketMsg.class
+cadelac/framework/pubsub/message/base/HasTimestamp.class
+cadelac/framework/pubsub/message/MessageProcessor.class
+cadelac/framework/pubsub/Internal.class
+cadelac/framework/pubsub/message/MsgDecoder$Symbol.class
+cadelac/framework/pubsub/message/PayloadMsg.class
+cadelac/framework/pubsub/message/MsgDecoder.class
+cadelac/framework/pubsub/ChannelHandler.class
+cadelac/framework/pubsub/ChannelId.class
