@@ -16,3 +16,4 @@
 target/classes/META-INF/maven/cadelac.framework/pubsub/pom.xml
 
 *.jar
+/target/

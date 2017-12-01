@@ -3,38 +3,29 @@ package cadelac.framework.pubsub.message;
 import org.apache.log4j.Logger;
 
 import cadelac.framework.blade.Framework;
-import cadelac.framework.blade.core.Utilities;
 import cadelac.framework.blade.core.message.Message;
 import cadelac.framework.blade.core.message.json.JsonEncoder;
 import cadelac.framework.blade.core.object.ObjectPopulator;
 import cadelac.framework.pubsub.BusChannel;
 import cadelac.framework.pubsub.ChannelId;
+import cadelac.framework.pubsub.message.base.HasEvent;
+import cadelac.framework.pubsub.message.base.HasOrigin;
+import cadelac.framework.pubsub.message.base.HasPayload;
+import cadelac.framework.pubsub.message.base.HasReference;
+import cadelac.framework.pubsub.message.base.HasSequenceId;
 import cadelac.framework.pubsub.message.base.HasTimestamp;
 
-public interface PacketMsg extends Message, HasTimestamp {
+public interface PacketMsg 
+		extends Message
+		, HasTimestamp 
+		, HasSequenceId
+		, HasEvent
+		, HasOrigin
+		, HasPayload
+		// used for routing through a gateway
+		, HasReference
+		{
 
-	String PAYLOAD = "Payload";
-	
-	long getSequenceId();
-	void setSequenceId(long sequenceId);
-
-	String getChannel();
-	void setChannel(String channel);
-	
-	String getEvent();
-	void setEvent(String event);
-	
-	String getType();
-	void setType(String type);
-	
-	String getOrigin();
-	void setOrigin(String origin);
-	
-	PayloadMsg getPayload();
-	void setPayload(PayloadMsg payload);
-	
-
-	
 	default PacketMsg publishOn(final ChannelId channel_) 
 			throws Exception {
 		
@@ -95,10 +86,13 @@ public interface PacketMsg extends Message, HasTimestamp {
 			final ObjectPopulator<PacketMsg> objectPopulator_) 
 					throws Exception {
 
-		final PacketMsg packet = Framework.getObjectFactory().fabricate(PacketMsg.class, objectPopulator_);
+		final PacketMsg packet = 
+				Framework.getObjectFactory().fabricate(
+						PacketMsg.class
+						, objectPopulator_);
 		packet.setOrigin(Framework.getApplication().getId());
-		packet.setSequenceId(Framework.getMonitor().getNextSequenceId());
-		packet.setTimestamp(Utilities.getTimestamp());
+		packet.populateSequenceId();
+		packet.populateTimestamp();
 		return packet;
 	}
 	

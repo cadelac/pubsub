@@ -13,6 +13,7 @@ import org.json.JSONObject;
 import cadelac.framework.blade.Framework;
 import cadelac.framework.blade.core.exception.FrameworkException;
 import cadelac.framework.blade.core.exception.InitializationException;
+import cadelac.framework.pubsub.message.base.HasPayload;
 
 
 public class MsgDecoder {
@@ -22,52 +23,56 @@ public class MsgDecoder {
 	}
 	
 	private static PacketMsg decodeInternal(JSONObject jsonObject) {
+		final String json = jsonObject.toString();
+		return decode(json);
+	}
+	
+	public static PacketMsg decode(final String json) {
 		try {
-			final String json = jsonObject.toString();
-			// create json object
-	    	final JsonObject jo = 
+
+			final JsonObject jo = 
 					Json.createReader(
 							new StringReader(json))
 					.readObject();
-	    	
-	    	// create packet
-	    	return Framework.getObjectFactory().fabricate(
-	    					PacketMsg.class
-	    					, p -> {
-	    						p.demarshall(jo);
 
-	    				    	if (jo.containsKey(PacketMsg.PAYLOAD) 
-	    								&& !jo.isNull(PacketMsg.PAYLOAD)) {
-	    				    		
-	    				    		// figure out the class based on the event
-	    				    		final Symbol<? extends PayloadMsg> symbol =
-	    				    				SYMBOL_TABLE.get(p.getEvent());
-	    				    		
-	    				    		// sanity checks...
-	    							if (symbol == null || symbol._class == null)
-	    								throw new InitializationException(String.format(
-	    										"Event [%s] not registered with MsgDecoder"
-	    										, p.getEvent()));
+			// create packet
+			return Framework.getObjectFactory().fabricate(
+					PacketMsg.class
+					, p -> {
+						p.demarshall(jo);
 
-	    				    		p.setPayload(
-	    				    				// create payload json object
-	    				    				Framework.getObjectFactory().fabricate(
-	    				    						symbol._class
-	    					    					, q -> {
-	    					    						q.demarshall(jo.getJsonObject(PacketMsg.PAYLOAD));
-	    					    					})
-	    				    				);
-	    				    	}
-	    					}
-	    	);
+						if (jo.containsKey(HasPayload.PAYLOAD) 
+								&& !jo.isNull(HasPayload.PAYLOAD)) {
+
+							// figure out the class based on the event
+							final Symbol<? extends PayloadMsg> symbol =
+									SYMBOL_TABLE.get(p.getEvent());
+
+							// sanity checks...
+							if (symbol == null || symbol._class == null)
+								throw new InitializationException(String.format(
+										"Event [%s] not registered with MsgDecoder"
+										, p.getEvent()));
+
+							p.setPayload(
+									// create payload json object
+									Framework.getObjectFactory().fabricate(
+											symbol._class
+											, q -> {
+												q.demarshall(jo.getJsonObject(HasPayload.PAYLOAD));
+											})
+									);
+						}
+					}
+					);
 
 		}
 		catch (Exception e_) {
 			logger.error(
 					"Exception: " 
-					+ e_.getMessage() 
-					+ "\nStacktrace:\n" 
-					+ FrameworkException.getStringStackTrace(e_));
+							+ e_.getMessage() 
+							+ "\nStacktrace:\n" 
+							+ FrameworkException.getStringStackTrace(e_));
 			return null;
 		}		
 	}
@@ -86,6 +91,7 @@ public class MsgDecoder {
 			unexpectedOperation(packet_);
 		}
 	}
+	
 	public static <L extends PayloadMsg> void add(
 			final Class<L> class_
 			, MessageProcessor processor_) {
