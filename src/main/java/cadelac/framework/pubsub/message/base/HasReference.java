@@ -1,11 +1,11 @@
 package cadelac.framework.pubsub.message.base;
 
 /**
- * Used to relate a message to something
+ * Refers to a related message
  * @author cadelac
  *
  */
 public interface HasReference {
-	String getReference();
-	void setReference(String reference);
+	long getReference();
+	void setReference(long reference);
 }

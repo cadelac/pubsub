@@ -9,22 +9,31 @@ import cadelac.framework.blade.core.object.ObjectPopulator;
 import cadelac.framework.pubsub.BusChannel;
 import cadelac.framework.pubsub.ChannelId;
 import cadelac.framework.pubsub.message.base.HasEvent;
+import cadelac.framework.pubsub.message.base.HasGatewayAddress;
 import cadelac.framework.pubsub.message.base.HasOrigin;
 import cadelac.framework.pubsub.message.base.HasPayload;
 import cadelac.framework.pubsub.message.base.HasReference;
 import cadelac.framework.pubsub.message.base.HasSequenceId;
 import cadelac.framework.pubsub.message.base.HasTimestamp;
+import cadelac.framework.pubsub.message.base.HasToken;
 
 public interface PacketMsg 
 		extends Message
-		, HasTimestamp 
 		, HasSequenceId
+		, HasTimestamp 
 		, HasEvent
 		, HasOrigin
 		, HasPayload
-		// used for routing through a gateway
+		
+		// authentication token
+		// mandatory when authentication is enforced
+		, HasToken
+		
+		// optional; sequence id of a related message
 		, HasReference
-		{
+				
+		// reserved; used for routing through a gateway
+		, HasGatewayAddress {
 
 	default PacketMsg publishOn(final ChannelId channel_) 
 			throws Exception {
