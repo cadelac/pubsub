@@ -4,7 +4,7 @@ import javax.websocket.EncodeException;
 import javax.websocket.Encoder;
 import javax.websocket.EndpointConfig;
 
-import cadelac.framework.blade.core.message.json.JsonEncoder;
+import cadelac.framework.blade.core.message.json.JsonFormat;
 import cadelac.framework.pubsub.message.PacketMsg;
 
 public class WSEncoder implements Encoder.Text<PacketMsg> {
@@ -23,6 +23,6 @@ public class WSEncoder implements Encoder.Text<PacketMsg> {
 	@Override
 	public String encode(final PacketMsg message_) 
 			throws EncodeException {
-		return JsonEncoder.encodeOnly(message_);
+		return JsonFormat.encodeOnly(message_);
 	}
 }

@@ -4,7 +4,7 @@ import javax.websocket.DecodeException;
 import javax.websocket.Decoder;
 import javax.websocket.EndpointConfig;
 
-import cadelac.framework.blade.core.message.json.JsonDecoder;
+import cadelac.framework.blade.core.message.json.JsonFormat;
 import cadelac.framework.pubsub.message.MsgDecoder;
 import cadelac.framework.pubsub.message.PacketMsg;
 
@@ -26,6 +26,6 @@ public class WSDecoder implements Decoder.Text<PacketMsg> {
 	
 	@Override
 	public boolean willDecode(String message_) {
-		return JsonDecoder.willDecode(message_);
+		return JsonFormat.willDecode(message_);
 	}
 }

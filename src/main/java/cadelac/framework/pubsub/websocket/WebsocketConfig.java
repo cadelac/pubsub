@@ -6,7 +6,7 @@ import org.apache.log4j.Logger;
 
 import cadelac.framework.blade.core.Identified;
 import cadelac.framework.blade.core.IdentifiedBase;
-import cadelac.framework.blade.core.message.json.JsonEncoder;
+import cadelac.framework.blade.core.message.json.JsonFormat;
 import cadelac.framework.pubsub.message.PacketMsg;
 
 public class WebsocketConfig 
@@ -36,7 +36,7 @@ public class WebsocketConfig
 				"Received from %s on websocket session [%s]:\n%s"
 				, getId()
 				, clientWebsocketSession_.getId()
-				, JsonEncoder.encodeOnly(packetRequest_)));
+				, JsonFormat.encodeOnly(packetRequest_)));
 	}
 
 	private static final Logger logger = Logger.getLogger(WebsocketConfig.class);

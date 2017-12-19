@@ -4,7 +4,7 @@ import org.apache.log4j.Logger;
 
 import cadelac.framework.blade.Framework;
 import cadelac.framework.blade.core.message.Message;
-import cadelac.framework.blade.core.message.json.JsonEncoder;
+import cadelac.framework.blade.core.message.json.JsonFormat;
 import cadelac.framework.blade.core.object.ObjectPopulator;
 import cadelac.framework.pubsub.BusChannel;
 import cadelac.framework.pubsub.ChannelId;
@@ -38,7 +38,7 @@ public interface PacketMsg
 	default PacketMsg publishOn(final ChannelId channel_) 
 			throws Exception {
 		
-		final String jsonEncoded = JsonEncoder.encode(this);
+		final String jsonEncoded = JsonFormat.encode(this);
 		final String channelName = channel_.getChannelName();
 		
 		logger.info(String.format(
@@ -57,7 +57,7 @@ public interface PacketMsg
 	default PacketMsg publishOn(final String subscriberName_, final ChannelId channel_) 
 			throws Exception {
 		
-		final String jsonEncoded = JsonEncoder.encode(this);
+		final String jsonEncoded = JsonFormat.encode(this);
 		final String channelName = channel_.getChannelName();
 		
 		logger.info(String.format(

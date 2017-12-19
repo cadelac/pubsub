@@ -5,7 +5,7 @@ import cadelac.framework.blade.app.ApplicationSimple;
 import cadelac.framework.blade.core.config.Configurator;
 import cadelac.framework.blade.core.exception.FrameworkException;
 import cadelac.framework.blade.core.state.StateLess;
-import cadelac.framework.blade.core.state.experimental.StateId;
+import cadelac.framework.blade.v2.core.dispatch.StateId;
 import cadelac.framework.pubsub.message.base.HasDuration;
 import cadelac.framework.pubsub.message.system.LifecycleMsg;
 import de.jackwhite20.japs.client.pub.Publisher;

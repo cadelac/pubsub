@@ -4,7 +4,7 @@ import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
 import cadelac.framework.blade.Framework;
-import cadelac.framework.blade.core.message.json.JsonEncoder;
+import cadelac.framework.blade.core.message.json.JsonFormat;
 import cadelac.framework.pubsub.message.MsgDecoder;
 import cadelac.framework.pubsub.message.PacketMsg;
 
@@ -20,7 +20,7 @@ public abstract class ChannelHandler {
 		jsonObject.put(EVENT_KEY, eventString_);
 		
 		final PacketMsg packet = MsgDecoder.decode(jsonObject);
-		final String jsonEncoded = JsonEncoder.encode(packet);
+		final String jsonEncoded = JsonFormat.encode(packet);
 		logger.info(String.format(
 				"\n\t app %s <<< received %s on channel %s:\n%s\n"
 				, Framework.getApplication().getId()
