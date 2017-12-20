@@ -1,6 +1,5 @@
 package cadelac.framework.pubsub;
 
-import cadelac.framework.blade.Framework;
 import cadelac.framework.blade.app.ApplicationSimple;
 import cadelac.framework.blade.core.config.Configurator;
 import cadelac.framework.blade.core.exception.FrameworkException;
@@ -35,34 +34,22 @@ public abstract class PubSubApp extends ApplicationSimple {
 		if (shouldSubscribeSystemChannel()) {
 			
 			// publish LifecycleEvent.UP
-//			Framework.getObjectFactory().fabricate(
-//					LifecycleMsg.class
-//					, event -> {
-//						event.setLifecycleEvent(LifecycleEvent.UP.toString());
-//					})
 			LifecycleMsg.create(LifecycleEvent.UP)
 			.wrap()
 			.publishOn(BusChannel.SYSTEM);
-
 			
-			// create heartbeat
-			final LifecycleMsg heartbeat = 
-//					Framework.getObjectFactory().fabricate(
-//							LifecycleMsg.class
-//							, event -> {
-//								event.setLifecycleEvent(LifecycleEvent.HEARTBEAT.toString());
-//							});
-					LifecycleMsg.create(LifecycleEvent.HEARTBEAT);
+			if (shouldPublishHeartbeat()) {
 
-			// publish periodic heartbeat
-			heartbeat
-			.stateId(() -> StateId.build(StateLess.STATELESS_STATE_ID))
-			.getState(() -> StateLess.STATELESS_STATE)
-			.push(HEARTBEAT_PERIOD
-					, 0L // delay
-					, (StateLess state_) -> {
-						heartbeat.wrap().publishOn(BusChannel.SYSTEM);
-					});
+				// create heartbeat
+				final LifecycleMsg heartbeat = 
+						LifecycleMsg.create(LifecycleEvent.HEARTBEAT);
+
+				// publish periodic heartbeat
+				heartbeat.push(
+						HEARTBEAT_PERIOD
+						, 0L // delay
+						, () -> heartbeat.wrap().publishOn(BusChannel.SYSTEM));
+			}
 			
 			subscribeSystemChannel();
 		}
@@ -75,6 +62,7 @@ public abstract class PubSubApp extends ApplicationSimple {
 	
 	protected boolean shouldSubscribeSystemChannel() { return true; }
 	protected boolean shouldSubscribeScriptChannel() { return true; }
+	protected boolean shouldPublishHeartbeat() { return true; }
 
 	protected abstract void subscribeSystemChannel();
 	protected abstract void subscribeScriptChannel();
