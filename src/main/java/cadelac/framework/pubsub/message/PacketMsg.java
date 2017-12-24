@@ -35,14 +35,14 @@ public interface PacketMsg
 		// reserved; used for routing through a gateway
 		, HasGatewayAddress {
 
-	default PacketMsg publishOn(final ChannelId channel_) 
+	default PacketMsg publish(final ChannelId channel_) 
 			throws Exception {
 		
 		final String jsonEncoded = JsonFormat.encode(this);
 		final String channelName = channel_.getChannelName();
 		
 		logger.info(String.format(
-				"\n\t app %s >>> publish %s on channel %s:\n%s\n"
+				"app %s >>> publish %s on channel %s: %s"
 				, Framework.getApplication().getId()
 				, getEvent()
 				, channelName
@@ -54,14 +54,14 @@ public interface PacketMsg
 		
 		return this;
 	}
-	default PacketMsg publishOn(final String subscriberName_, final ChannelId channel_) 
+	default PacketMsg publish(final String subscriberName_, final ChannelId channel_) 
 			throws Exception {
 		
 		final String jsonEncoded = JsonFormat.encode(this);
 		final String channelName = channel_.getChannelName();
 		
 		logger.info(String.format(
-				"\n\t app %s >>> publish %s to %s on channel %s:\n%s\n"
+				"app %s >>> publish %s to %s on channel %s: %s"
 				, Framework.getApplication().getId()
 				, getEvent()
 				, subscriberName_

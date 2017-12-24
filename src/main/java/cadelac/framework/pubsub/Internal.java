@@ -10,11 +10,11 @@ public class Internal {
 	}
 	public PacketMsg publish() 
 			throws Exception {
-		return _event.wrap().publishOn(_channelId);
+		return _event.wrap().publish(_channelId);
 	}
 	public PacketMsg publish(final String subscriberName_) 
 			throws Exception {
-		return _event.wrap().publishOn(subscriberName_, _channelId);
+		return _event.wrap().publish(subscriberName_, _channelId);
 	}
 	final PayloadMsg _event;
 	final ChannelId _channelId;

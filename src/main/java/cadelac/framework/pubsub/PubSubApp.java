@@ -36,7 +36,7 @@ public abstract class PubSubApp extends ApplicationSimple {
 			// publish LifecycleEvent.UP
 			LifecycleMsg.create(LifecycleEvent.UP)
 			.wrap()
-			.publishOn(BusChannel.SYSTEM);
+			.publish(BusChannel.SYSTEM);
 			
 			if (shouldPublishHeartbeat()) {
 
@@ -48,7 +48,7 @@ public abstract class PubSubApp extends ApplicationSimple {
 				heartbeat.push(
 						HEARTBEAT_PERIOD
 						, 0L // delay
-						, () -> heartbeat.wrap().publishOn(BusChannel.SYSTEM));
+						, () -> heartbeat.wrap().publish(BusChannel.SYSTEM));
 			}
 			
 			subscribeSystemChannel();
