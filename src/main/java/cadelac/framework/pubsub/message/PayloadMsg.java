@@ -1,7 +1,7 @@
 package cadelac.framework.pubsub.message;
 
 import cadelac.framework.blade.Framework;
-import cadelac.framework.blade.core.message.Dispatchable;
+import cadelac.framework.blade.core.message.Generated;
 import cadelac.framework.blade.core.message.Message;
 import cadelac.framework.blade.core.object.ObjectPopulator;
 
@@ -25,9 +25,8 @@ public interface PayloadMsg extends Message {
 	default PacketMsg wrap(
 			final ObjectPopulator<PacketMsg> objectPopulator_) 
 					throws Exception {
-		
-		@SuppressWarnings("unchecked")
-		final Class<? extends Dispatchable> proto = (Class<? extends Dispatchable>)
+
+		final Class<? extends Generated> proto = (Class<? extends Generated>)
 			Framework.getPrototype2ConcreteMap().prototypeClassOf(this.getClass());
 		final PacketMsg packetMsg = PacketMsg.createEventMsg(this, proto.getSimpleName());
 		if (objectPopulator_ != null)
