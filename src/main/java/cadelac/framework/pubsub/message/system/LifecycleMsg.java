@@ -3,11 +3,11 @@ package cadelac.framework.pubsub.message.system;
 import cadelac.framework.blade.Framework;
 import cadelac.framework.blade.core.object.ObjectPopulator;
 import cadelac.framework.pubsub.LifecycleEvent;
-import cadelac.framework.pubsub.message.AdminDirective;
+import cadelac.framework.pubsub.message.AdminMsg;
 import cadelac.framework.pubsub.message.base.HasOrigin;
 
 public interface LifecycleMsg 
-		extends AdminDirective
+		extends AdminMsg
 		, HasOrigin {
 
 	String EVENT = "LifecycleMsg";

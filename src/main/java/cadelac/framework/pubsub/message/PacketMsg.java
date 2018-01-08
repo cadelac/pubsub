@@ -39,7 +39,7 @@ public interface PacketMsg
 			throws Exception {
 		
 		final String jsonEncoded = JsonFormat.encode(this);
-		final String channelName = channel_.getChannelName();
+		final String channelName = channel_.getId();
 		
 		logger.info(String.format(
 				"app %s >>> publish %s on channel %s: %s"
@@ -58,7 +58,7 @@ public interface PacketMsg
 			throws Exception {
 		
 		final String jsonEncoded = JsonFormat.encode(this);
-		final String channelName = channel_.getChannelName();
+		final String channelName = channel_.getId();
 		
 		logger.info(String.format(
 				"app %s >>> publish %s to %s on channel %s: %s"

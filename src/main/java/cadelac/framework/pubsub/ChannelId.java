@@ -1,14 +1,10 @@
 package cadelac.framework.pubsub;
 
-public class ChannelId {
+import cadelac.framework.blade.core.IdentifiedBase;
+
+public class ChannelId extends IdentifiedBase {
 
 	public ChannelId(final String channelName_) {
-		_channelName = channelName_;
+		super(channelName_);
 	}
-	
-	public String getChannelName() {
-		return _channelName;
-	}
-	
-	private final String _channelName;
 }
