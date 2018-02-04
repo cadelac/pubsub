@@ -13,6 +13,7 @@ import org.json.JSONObject;
 import cadelac.framework.blade.Framework;
 import cadelac.framework.blade.core.exception.FrameworkException;
 import cadelac.framework.blade.core.exception.InitializationException;
+import cadelac.framework.pubsub.Utility;
 import cadelac.framework.pubsub.message.base.HasPayload;
 
 
@@ -63,16 +64,22 @@ public class MsgDecoder {
 											})
 									);
 						}
-					}
-					);
-
+					});
 		}
 		catch (Exception e_) {
-			logger.error(
-					"Exception: " 
-							+ e_.getMessage() 
-							+ "\nStacktrace:\n" 
-							+ FrameworkException.getStringStackTrace(e_));
+			final String formattedText = "Exception: "
+					+ e_.getMessage() 
+					+ "\nStacktrace:\n" 
+					+ FrameworkException.getStringStackTrace(e_);
+			try {
+				Utility.monitor(formattedText);
+			} 
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+			finally {
+				logger.error(formattedText);
+			}
 			return null;
 		}		
 	}
@@ -83,13 +90,11 @@ public class MsgDecoder {
 				SYMBOL_TABLE.get(packet_.getEvent());
 		if (symbol!=null && symbol._class!=null) {
 			final MessageProcessor processor = symbol._processor;
-			if (processor != null) {
+			if (processor != null)
 				processor.process(packet_);
-			}
 		}
-		else {
+		else
 			unexpectedOperation(packet_);
-		}
 	}
 	
 	public static <L extends PayloadMsg> void add(
@@ -118,11 +123,16 @@ public class MsgDecoder {
 		MessageProcessor _processor;
 	}
 	
-	private static void unexpectedOperation(final PacketMsg packet_) {
-		logger.warn(String.format(
+	private static void unexpectedOperation(
+			final PacketMsg packet_) 
+					throws Exception {
+		final String formattedText = String.format(
 				"Unexpected Event: [%s]"
-				, packet_.getEvent()));
+				, packet_.getEvent());
+		Utility.monitor(formattedText);
+		logger.warn(formattedText);
 	}
+	
 	
 	private static final Map<String,Symbol<? extends PayloadMsg>> SYMBOL_TABLE = 
 			new HashMap<String,Symbol<? extends PayloadMsg>>();

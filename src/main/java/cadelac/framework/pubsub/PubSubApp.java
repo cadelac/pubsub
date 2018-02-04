@@ -29,41 +29,54 @@ public abstract class PubSubApp extends ApplicationSimple {
 		BusChannel.setPublisher(createPublisher(busConfig));
 		BusChannel.setSubscriber(createSubscriber(getId(), busConfig));
 		
-		if (shouldSubscribeSystemChannel()) {
-			
-			// publish LifecycleEvent.UP
-			LifecycleMsg.create(LifecycleEvent.UP)
-			.wrap()
-			.publish(BusChannel.SYSTEM);
-			
-			if (shouldPublishHeartbeat()) {
-
-				// create heartbeat
-				final LifecycleMsg heartbeat = 
-						LifecycleMsg.create(LifecycleEvent.HEARTBEAT);
-
-				// publish periodic heartbeat
-				heartbeat.push(
-						HEARTBEAT_PERIOD
-						, 0L // delay
-						, () -> heartbeat.wrap().publish(BusChannel.SYSTEM));
-			}
-			
-			subscribeSystemChannel();
-		}
-		
-		if (shouldSubscribeScriptChannel())
-			subscribeScriptChannel();
+		initSystemChannel();
+		initScriptChannel();
 	}
 	
 	protected final static long HEARTBEAT_PERIOD = 15 * HasDuration.ONE_SECOND;
 	
 	protected boolean shouldSubscribeSystemChannel() { return true; }
-	protected boolean shouldSubscribeScriptChannel() { return true; }
+	protected boolean shouldPublishLifecycleUP() { return true; }
 	protected boolean shouldPublishHeartbeat() { return true; }
+
+	
+	protected boolean shouldSubscribeScriptChannel() { return true; }
 
 	protected abstract void subscribeSystemChannel();
 	protected abstract void subscribeScriptChannel();
+	
+	
+	private void initSystemChannel() throws Exception {
+		
+		// publish LifecycleEvent.UP
+		if (this.shouldPublishLifecycleUP()) 
+			LifecycleMsg.create(LifecycleEvent.UP)
+			.wrap()
+			.publish(BusChannel.SYSTEM);
+
+		
+		if (this.shouldPublishHeartbeat()) {
+			// create heartbeat
+			final LifecycleMsg heartbeat = 
+					LifecycleMsg.create(LifecycleEvent.HEARTBEAT);
+
+			// publish periodic heartbeat
+			heartbeat.push(
+					HEARTBEAT_PERIOD
+					, 0L // delay
+					, () -> heartbeat.wrap().publish(BusChannel.SYSTEM));
+		}
+		
+		
+		if (this.shouldSubscribeSystemChannel())
+			subscribeSystemChannel();
+
+	}
+	
+	private void initScriptChannel() throws Exception {
+		if (shouldSubscribeScriptChannel())
+			subscribeScriptChannel();
+	}
 	
 	
 	private Publisher createPublisher(final BusConfig busConfig_) {

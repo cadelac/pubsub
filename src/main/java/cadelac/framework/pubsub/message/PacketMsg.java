@@ -8,6 +8,7 @@ import cadelac.framework.blade.core.message.json.JsonFormat;
 import cadelac.framework.blade.core.object.ObjectPopulator;
 import cadelac.framework.pubsub.BusChannel;
 import cadelac.framework.pubsub.ChannelId;
+import cadelac.framework.pubsub.Utility;
 import cadelac.framework.pubsub.message.base.HasEvent;
 import cadelac.framework.pubsub.message.base.HasGatewayAddress;
 import cadelac.framework.pubsub.message.base.HasOrigin;
@@ -40,13 +41,15 @@ public interface PacketMsg
 		
 		final String jsonEncoded = JsonFormat.encode(this);
 		final String channelName = channel_.getId();
-		
-		logger.info(String.format(
+		final String formattedText = String.format(
 				"app %s >>> publish %s on channel %s: %s"
 				, Framework.getApplication().getId()
 				, getEvent()
 				, channelName
-				, jsonEncoded));
+				, jsonEncoded);
+		
+		Utility.monitor(formattedText);
+		logger.info(formattedText);
 		
 		BusChannel.getPublisher().publish(
 				channelName
@@ -59,14 +62,16 @@ public interface PacketMsg
 		
 		final String jsonEncoded = JsonFormat.encode(this);
 		final String channelName = channel_.getId();
-		
-		logger.info(String.format(
+		final String formattedText = String.format(
 				"app %s >>> publish %s to %s on channel %s: %s"
 				, Framework.getApplication().getId()
 				, getEvent()
 				, subscriberName_
 				, channelName
-				, jsonEncoded));
+				, jsonEncoded);
+		
+		Utility.monitor(formattedText);
+		logger.info(formattedText);
 		
 		BusChannel.getPublisher().publish(
 				channelName
