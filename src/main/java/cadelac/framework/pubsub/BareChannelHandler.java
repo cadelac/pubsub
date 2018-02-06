@@ -1,9 +1,5 @@
 package cadelac.framework.pubsub;
 
-import static cadelac.framework.pubsub.BareChannelHandler.logger;
-
-import javax.websocket.EncodeException;
-
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
