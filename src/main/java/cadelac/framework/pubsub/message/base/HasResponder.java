@@ -1,8 +1,6 @@
 package cadelac.framework.pubsub.message.base;
 
-import cadelac.framework.blade.core.message.Message;
-
-public interface HasResponder extends Message {
+public interface HasResponder {
 
 	HasApplicationId getResponder();
 	void setResponder(HasApplicationId responder);

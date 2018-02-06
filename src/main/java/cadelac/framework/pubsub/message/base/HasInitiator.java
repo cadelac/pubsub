@@ -1,8 +1,6 @@
 package cadelac.framework.pubsub.message.base;
 
-import cadelac.framework.blade.core.message.Message;
-
-public interface HasInitiator extends Message {
+public interface HasInitiator {
 	
 	HasApplicationId getInitiator();
 	void setInitiator(HasApplicationId initiator);

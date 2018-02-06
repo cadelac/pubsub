@@ -1,8 +1,6 @@
 package cadelac.framework.pubsub.message.base;
 
-import cadelac.framework.blade.core.message.Message;
-
-public interface HasApplicationId extends Message {
+public interface HasApplicationId {
 	String getApplicationId();
 	void setApplicationId(String applicationId);
 }

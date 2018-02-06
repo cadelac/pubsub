@@ -28,6 +28,39 @@ public class MsgDecoder {
 		return decode(json);
 	}
 	
+	public static PacketMsg decodePacket(
+			final JsonObject jo) 
+					throws Exception {
+		return Framework.getObjectFactory().fabricate(
+				PacketMsg.class
+				, p -> {
+					p.demarshall(jo);
+
+					if (jo.containsKey(HasPayload.PAYLOAD) 
+							&& !jo.isNull(HasPayload.PAYLOAD)) {
+
+						// figure out the class based on the event
+						final Symbol<? extends PayloadMsg> symbol =
+								SYMBOL_TABLE.get(p.getEvent());
+
+						// sanity checks...
+						if (symbol == null || symbol._class == null)
+							throw new InitializationException(String.format(
+									"Event [%s] not registered with MsgDecoder"
+									, p.getEvent()));
+
+						p.setPayload(
+								// create payload json object
+								Framework.getObjectFactory().fabricate(
+										symbol._class
+										, q -> {
+											q.demarshall(jo.getJsonObject(HasPayload.PAYLOAD));
+										})
+								);
+					}
+				});
+	}
+	
 	public static PacketMsg decode(final String json) {
 		try {
 
@@ -37,34 +70,7 @@ public class MsgDecoder {
 					.readObject();
 
 			// create packet
-			return Framework.getObjectFactory().fabricate(
-					PacketMsg.class
-					, p -> {
-						p.demarshall(jo);
-
-						if (jo.containsKey(HasPayload.PAYLOAD) 
-								&& !jo.isNull(HasPayload.PAYLOAD)) {
-
-							// figure out the class based on the event
-							final Symbol<? extends PayloadMsg> symbol =
-									SYMBOL_TABLE.get(p.getEvent());
-
-							// sanity checks...
-							if (symbol == null || symbol._class == null)
-								throw new InitializationException(String.format(
-										"Event [%s] not registered with MsgDecoder"
-										, p.getEvent()));
-
-							p.setPayload(
-									// create payload json object
-									Framework.getObjectFactory().fabricate(
-											symbol._class
-											, q -> {
-												q.demarshall(jo.getJsonObject(HasPayload.PAYLOAD));
-											})
-									);
-						}
-					});
+			return decodePacket(jo);
 		}
 		catch (Exception e_) {
 			final String formattedText = "Exception: "

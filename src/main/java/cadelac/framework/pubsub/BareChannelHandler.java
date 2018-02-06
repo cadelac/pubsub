@@ -1,5 +1,9 @@
 package cadelac.framework.pubsub;
 
+import static cadelac.framework.pubsub.BareChannelHandler.logger;
+
+import javax.websocket.EncodeException;
+
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
@@ -18,8 +22,21 @@ public abstract class BareChannelHandler {
 					throws Exception {
 		
 		jsonObject.put(EVENT_KEY, eventString_);
-		
-		final PacketMsg packet = MsgDecoder.decode(jsonObject);
+		// decode into packet
+		final PacketMsg packet = decode(jsonObject);
+		monitor(packet);
+    	MsgDecoder.processMessage(packet);
+	}
+
+	protected PacketMsg decode(
+			final JSONObject jsonObject_) 
+					throws Exception {
+		return MsgDecoder.decode(jsonObject_);
+	}
+	
+	protected abstract String getChannelName();
+	
+	protected void monitor(final PacketMsg packet) throws Exception {
 		final String jsonEncoded = JsonFormat.encode(packet);
 		final String formattedText = String.format(
 				"\n\t app %s <<< received %s on channel %s:\n%s\n"
@@ -29,11 +46,7 @@ public abstract class BareChannelHandler {
 				, jsonEncoded);
 		surveil(formattedText);
 		logger.info(formattedText);
-    	MsgDecoder.processMessage(packet);
 	}
-
-	
-	protected abstract String getChannelName();
 	
 	protected void surveil(
 			final String formattedText) 
