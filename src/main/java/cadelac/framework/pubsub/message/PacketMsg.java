@@ -81,6 +81,30 @@ public interface PacketMsg
 		return this;
 	}
 	
+	// surveilled publish
+	default PacketMsg surpub(final String subscriberName_, final ChannelId channel_) 
+			throws Exception {
+		
+		final String jsonEncoded = JsonFormat.encode(this);
+		final String channelName = channel_.getId();
+		final String formattedText = String.format(
+				"app %s >>> surveilled publish %s to %s on channel %s: %s"
+				, Framework.getApplication().getId()
+				, getEvent()
+				, subscriberName_
+				, channelName
+				, jsonEncoded);
+		logger.info(formattedText);
+		
+		BusChannel.getPublisher().publish(
+				channelName
+				, subscriberName_
+				, jsonEncoded);
+		Utility.surpub(jsonEncoded);
+		
+		return this;
+	}
+	
 	static PacketMsg createEventMsg(
 			final PayloadMsg payload_
 			, final String event_) 

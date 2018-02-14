@@ -7,6 +7,7 @@ import cadelac.framework.pubsub.BusChannel;
 import cadelac.framework.pubsub.LifecycleEvent;
 import cadelac.framework.pubsub.PubSubApp;
 import cadelac.framework.pubsub.message.MsgDecoder;
+import cadelac.framework.pubsub.message.PacketMsg;
 import cadelac.framework.pubsub.message.monitor.MonitorMsg;
 import cadelac.framework.pubsub.message.system.LifecycleMsg;
 import cadelac.framework.pubsub.prog.monitor.handler.MonitorChannelHandler;
@@ -37,10 +38,15 @@ public class App extends PubSubApp {
 		
 		configureDecoder();
 		
-		BusChannel.subscribe(MonitorChannelHandler.class);
+		subscribeSystemChannel();
+		subscribeMonitorChannel();
+		
+		Script.simulate();
 	}
 
-
+	protected void subscribeMonitorChannel() {
+		BusChannel.subscribe(MonitorChannelHandler.class);
+	}
 
 	@Override
 	protected void subscribeSystemChannel() {
@@ -75,40 +81,49 @@ public class App extends PubSubApp {
 
 		MsgDecoder.add(
 				LifecycleMsg.class
-				, packet_ -> packet_.getPayload().push(
-						() -> {
-							final LifecycleMsg msg =
-									(LifecycleMsg) packet_.getPayload();
-							
-							final LifecycleEvent lifecycleEvent = 
-									msg.xgetLifecycleEvent();
-							if (lifecycleEvent != LifecycleEvent.HEARTBEAT) {
-								// ignore heart-beat messages (too much noise!)
-								logger.warn(String.format(
-										"%d: [%s] %s - %s"
-										, packet_.getTimestamp()
-										, lifecycleEvent.getClass().getSimpleName()
-										, packet_.getOrigin()
-										, lifecycleEvent.toString()));
-							}
-							
-						}));
+				, packet_ -> handleLifecycle(packet_));
 		
 		MsgDecoder.add(
 				MonitorMsg.class
-				, packet_ -> packet_.getPayload().push(
-						() -> {
-							final MonitorMsg mm =
-									(MonitorMsg) packet_.getPayload();
-							logger.warn(String.format(
-									"%d: [%s] %s >>> [%s]"
-									, packet_.getTimestamp()
-									, mm.getClass().getSimpleName()
-									, packet_.getOrigin()
-									, mm.getText()));
-						}));
-		
+				, packet_ -> handleMonitorMsg(packet_));
 	}
 
+
+	protected void handleLifecycle(final PacketMsg packet_) throws Exception {
+		packet_.getPayload().push(
+				() -> {
+					final LifecycleMsg msg =
+							(LifecycleMsg) packet_.getPayload();
+					
+					final LifecycleEvent lifecycleEvent = 
+							msg.xgetLifecycleEvent();
+					if (lifecycleEvent != LifecycleEvent.HEARTBEAT) {
+						// ignore heart-beat messages (too much noise!)
+						logger.warn(String.format(
+								"%d: [%s] %s - %s"
+								, packet_.getTimestamp()
+								, lifecycleEvent.getClass().getSimpleName()
+								, packet_.getOrigin()
+								, lifecycleEvent.toString()));
+					}
+				});
+	}
+	
+	protected void handleMonitorMsg(final PacketMsg packet_) throws Exception {
+		packet_.getPayload().push(
+				() -> {
+					final MonitorMsg mm =
+							(MonitorMsg) packet_.getPayload();
+					
+					logger.warn(String.format(
+							"%d: [%s] %s >>> [%s]"
+							, packet_.getTimestamp()
+							, mm.getClass().getSimpleName()
+							, packet_.getOrigin()
+							, mm.getText()));
+				});
+	}
+	
+	
 	private static final Logger logger = Logger.getLogger(App.class);
 }

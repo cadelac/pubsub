@@ -21,7 +21,7 @@ public abstract class BareChannelHandler {
 		// decode into packet
 		final PacketMsg packet = decode(jsonObject);
 		monitor(packet);
-    	MsgDecoder.processMessage(packet);
+		MsgDecoder.processMessage(packet);
 	}
 
 	protected PacketMsg decode(

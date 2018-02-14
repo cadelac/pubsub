@@ -4,7 +4,6 @@ import org.json.JSONObject;
 
 import cadelac.framework.pubsub.BareChannelHandler;
 import cadelac.framework.pubsub.BusChannel;
-import cadelac.framework.pubsub.SurveilledChannelHandler;
 import cadelac.framework.pubsub.message.system.LifecycleMsg;
 import de.jackwhite20.japs.client.sub.impl.handler.annotation.Channel;
 import de.jackwhite20.japs.client.sub.impl.handler.annotation.Key;
