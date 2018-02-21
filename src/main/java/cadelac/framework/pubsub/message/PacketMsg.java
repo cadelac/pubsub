@@ -104,6 +104,29 @@ public interface PacketMsg
 		
 		return this;
 	}
+	// surveilled publish
+	default PacketMsg surpub(final ChannelId channel_) 
+			throws Exception {
+		
+		final String jsonEncoded = JsonFormat.encode(this);
+		final String channelName = channel_.getId();
+		final String formattedText = String.format(
+				"app %s >>> surveilled publish %s on channel %s: %s"
+				, Framework.getApplication().getId()
+				, getEvent()
+				, channelName
+				, jsonEncoded);
+		logger.info(formattedText);
+		
+		BusChannel.getPublisher().publish(
+				channelName
+				, jsonEncoded);
+		Utility.surpub(jsonEncoded);
+		
+		return this;
+	}
+	
+	
 	
 	static PacketMsg createEventMsg(
 			final PayloadMsg payload_
