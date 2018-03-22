@@ -19,13 +19,15 @@ public class Utility {
 		1) PacketMsg.publish() to send a text monitor message, and
 		2) SurveilledChannelHandler when receiving a message.
 		maybe monitor() should be called explicitly...
-		 */
-		BusChannel.getPublisher().publish(
+		
+				BusChannel.getPublisher().publish(
 				BusChannel.MONITOR.getId()
 				, JsonFormat.encode(
 						MonitorMsg
 						.create(text_)
 						.wrap()));
+		 */
+
 	}
 
 	/**
