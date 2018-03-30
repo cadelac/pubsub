@@ -5,7 +5,7 @@ import de.jackwhite20.japs.client.sub.Subscriber;
 
 public class BusChannel {
 
-	public static <H extends BareChannelHandler> void subscribe(
+	public static <H extends PubsubChannelHandler> void subscribe(
 			final Class<H> channelHandler_) {
 		BusChannel.getSubscriber().subscribeMulti(channelHandler_);
 	}

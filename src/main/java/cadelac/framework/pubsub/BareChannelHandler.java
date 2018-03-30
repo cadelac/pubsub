@@ -8,7 +8,7 @@ import cadelac.framework.blade.core.message.json.JsonFormat;
 import cadelac.framework.pubsub.message.MsgDecoder;
 import cadelac.framework.pubsub.message.PacketMsg;
 
-public abstract class BareChannelHandler {
+public abstract class BareChannelHandler extends PubsubChannelHandler {
 	
 	public static final String EVENT_KEY = "Event";
 	
