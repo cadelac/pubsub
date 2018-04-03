@@ -71,12 +71,13 @@ public class ChannelHandlerGenerator extends LowLevelGenerator {
 		
 		addCode(code -> {
 			code.append(String.format(
-					"@Channel(\"%s\")\n" //1
-							+ "public class %s extends %s {\n\n" //2 //3
-							+ "  public static final String EVENT_KEY = \"Event\";\n\n"
-							, _channelInfoAnnotation.value() //1
-							, getClassname() //2
-							, InstantiatedChannelHandler.class.getSimpleName())); //3
+					"/* AUTOMATICALLY GENERATED CODE BY FRAMEWORK -- DO NOT EDIT !!! */\n\n"
+					+ "@Channel(\"%s\")\n" //1
+					+ "public class %s extends %s {\n\n" //2 //3
+					+ "  public static final String EVENT_KEY = \"Event\";\n\n"
+					, _channelInfoAnnotation.value() //1
+					, getClassname() //2
+					, InstantiatedChannelHandler.class.getSimpleName())); //3
 		});
 
 		for (Input input : _acceptAnnotation.value()) {			
@@ -84,14 +85,19 @@ public class ChannelHandlerGenerator extends LowLevelGenerator {
 				code.append(String.format(
 						"  @Key(EVENT_KEY)\n"
 								+ "  @Value(%s.EVENT)\n" //1
-								+ "  public void on%s(JSONObject jsonObject) throws Exception {\n" //2
+								+ "  public void on%s(final JSONObject jsonObject)\n" //2
+								+ "          throws Exception {\n"
 								+ "    jsonObject.put(EVENT_KEY, %s.EVENT);\n" //3
-								+ "    %s.process(MsgDecoder.decode(jsonObject));\n" //4
+								+ "    %s.process(\n" //4
+								+ "        MsgDecoder.directDecodePacket(\n"
+								+ "                jsonObject\n"
+								+ "                , %s.class));\n" //5
 								+ "  }\n\n"
-								, input.type().getSimpleName() //1
-								, input.type().getSimpleName() //2
-								, input.type().getSimpleName() //3
-								, input.handler().getSimpleName())); //4
+								, input.type().getSimpleName()    //1
+								, input.type().getSimpleName()    //2
+								, input.type().getSimpleName()    //3
+								, input.handler().getSimpleName() //4
+								, input.type().getSimpleName())); //5
 			});
 		}
 		

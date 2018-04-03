@@ -61,6 +61,32 @@ public class MsgDecoder {
 				});
 	}
 	
+	public static <L extends PayloadMsg> PacketMsg directDecodePacket(
+			JSONObject jsonObject
+			, Class<L> clazz_) 
+					throws Exception {
+
+		final JsonObject jo = Json.createReader(
+				new StringReader(jsonObject.toString()))
+				.readObject();
+
+		return Framework.getObjectFactory().fabricate(
+				PacketMsg.class
+				, packet_ -> {
+					packet_.demarshall(jo);
+					if (jo.containsKey(HasPayload.PAYLOAD) 
+							&& !jo.isNull(HasPayload.PAYLOAD)) {
+						packet_.setPayload(
+								Framework.getObjectFactory().fabricate(
+										clazz_
+										, q -> {
+											q.demarshall(jo.getJsonObject(HasPayload.PAYLOAD));
+										}));
+					}
+				});
+	}
+	
+	
 	public static PacketMsg decode(final String json) {
 		try {
 
