@@ -66,8 +66,12 @@ public class MsgDecoder {
 			, Class<L> clazz_) 
 					throws Exception {
 
+		final String jsonString = jsonObject.toString();
+		logger.info(String.format(
+				"\t*** directDecode:%s"
+				, jsonString));
 		final JsonObject jo = Json.createReader(
-				new StringReader(jsonObject.toString()))
+				new StringReader(jsonString))
 				.readObject();
 
 		return Framework.getObjectFactory().fabricate(
