@@ -24,8 +24,7 @@ public class ChannelHandlerGenerator extends LowLevelGenerator {
 	
 	
 	
-	// TODO: new type for labels for $store entry 
-	public static final String STORE_ENTRY_MSG_TRAIL = "storeEntryMsgTrail";
+	public static final String STORE_ENTRY_PACKET_TRAIL = "storeEntryPacketTrail";
 	
 	
 	public ChannelHandlerGenerator() {
@@ -96,28 +95,6 @@ public class ChannelHandlerGenerator extends LowLevelGenerator {
 
 		for (Input input : _acceptAnnotation.value()) {			
 			addCode(code -> {
-				/*
-				code.append(String.format(
-						"  @Key(EVENT_KEY)\n"
-								+ "  @Value(%s.EVENT)\n" //1
-								+ "  public void on%s(final JSONObject jsonObject)\n" //2
-								+ "          throws Exception {\n"
-								+ "    jsonObject.put(EVENT_KEY, %s.EVENT);\n" //3
-								+ "    final PacketMsg packet = "
-								+ "    %s.process(\n" //4
-								+ "        MsgDecoder.directDecodePacket(\n"
-								+ "                jsonObject\n"
-								+ "                , %s.class));\n" //5
-								+ "  }\n\n"
-								, input.type().getSimpleName()    //1
-								, input.type().getSimpleName()    //2
-								, input.type().getSimpleName()    //3
-								, input.handler().getSimpleName() //4
-								, input.type().getSimpleName())); //5
-				*/
-				
-				
-				
 				code.append(String.format(
 						"  @Key(EVENT_KEY)\n"
 								+ "  @Value(%s.EVENT)\n" //1
@@ -138,7 +115,7 @@ public class ChannelHandlerGenerator extends LowLevelGenerator {
 								, input.type().getSimpleName()    //2
 								, input.type().getSimpleName()    //3
 								, input.type().getSimpleName()    //5
-								, STORE_ENTRY_MSG_TRAIL //6
+								, STORE_ENTRY_PACKET_TRAIL //6
 								, input.handler().getSimpleName() //4
 						));			
 			});
