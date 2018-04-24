@@ -108,7 +108,7 @@ public class ChannelHandlerGenerator extends LowLevelGenerator {
 								+ "    MessageBlock<PacketMsg> messageBlock =\n"
 								+ "        Framework.$store.getValue(\"%s\");\n" //6
 								+ "    if (messageBlock!=null)\n"
-								+ "        messageBlock.block(packet);\n"
+								+ "        messageBlock.block(\"%s\", packet);\n" //7
 								+ "    %s.process(packet);\n" //4
 								+ "  }\n\n\n"
 								, input.type().getSimpleName()    //1
@@ -116,6 +116,7 @@ public class ChannelHandlerGenerator extends LowLevelGenerator {
 								, input.type().getSimpleName()    //3
 								, input.type().getSimpleName()    //5
 								, STORE_ENTRY_PACKET_TRAIL //6
+								, _channelInfoAnnotation.value() //7
 								, input.handler().getSimpleName() //4
 						));			
 			});
