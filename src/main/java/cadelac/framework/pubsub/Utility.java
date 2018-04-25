@@ -9,29 +9,6 @@ import de.jackwhite20.japs.client.pub.Publisher;
 
 public class Utility {
 
-	public static void monitor(final String text_) 
-			throws Exception {
-		
-		// we cannot use convenience method PacketMsg.publish() 
-		// because it will trigger recursion and blow up the heap
-		// instead, we use publish directly using publisher
-		
-		/*
-		we need to think more about this. monitor() is called in 
-		1) PacketMsg.publish() to send a text monitor message, and
-		2) SurveilledChannelHandler when receiving a message.
-		maybe monitor() should be called explicitly...
-		
-				BusChannel.getPublisher().publish(
-				BusChannel.MONITOR.getId()
-				, JsonFormat.encode(
-						MonitorMsg
-						.create(text_)
-						.wrap()));
-		 */
-
-	}
-
 	/**
 	 * publish to monitor channel
 	 * @param jsonEncoded_

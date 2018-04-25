@@ -13,8 +13,10 @@ import org.json.JSONObject;
 import cadelac.framework.blade.Framework;
 import cadelac.framework.blade.core.exception.FrameworkException;
 import cadelac.framework.blade.core.exception.InitializationException;
+import cadelac.framework.blade.core.message.json.JsonFormat;
 import cadelac.framework.pubsub.Utility;
 import cadelac.framework.pubsub.message.base.HasPayload;
+import cadelac.framework.pubsub.message.monitor.MonitorMsg;
 
 
 public class MsgDecoder {
@@ -108,7 +110,9 @@ public class MsgDecoder {
 					+ "\nStacktrace:\n" 
 					+ FrameworkException.getStringStackTrace(e_);
 			try {
-				Utility.monitor(formattedText);
+				Utility.pubMon(
+						JsonFormat.encode(
+								MonitorMsg.create(formattedText).wrap()));
 			} 
 			catch (Exception e) {
 				e.printStackTrace();
@@ -165,7 +169,9 @@ public class MsgDecoder {
 		final String formattedText = String.format(
 				"Unexpected Event: [%s]"
 				, packet_.getEvent());
-		Utility.monitor(formattedText);
+		Utility.pubMon(
+				JsonFormat.encode(
+						MonitorMsg.create(formattedText).wrap()));
 		logger.warn(formattedText);
 	}
 	
