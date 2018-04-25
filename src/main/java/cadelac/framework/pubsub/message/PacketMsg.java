@@ -125,9 +125,4 @@ public interface PacketMsg
 		packet.populateTimestamp();
 		return packet;
 	}
-
-	
-	
-	
-	static final Logger logger = Logger.getLogger(PacketMsg.class);
 }

@@ -69,9 +69,6 @@ public class MsgDecoder {
 					throws Exception {
 
 		final String jsonString = jsonObject.toString();
-		logger.info(String.format(
-				"\t*** directDecode:%s"
-				, jsonString));
 		final JsonObject jo = Json.createReader(
 				new StringReader(jsonString))
 				.readObject();
