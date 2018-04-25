@@ -1,12 +1,13 @@
 package cadelac.framework.pubsub.message;
 
+import static cadelac.framework.blade.Framework.$store;
+
 import org.apache.log4j.Logger;
 
 import cadelac.framework.blade.Framework;
+import cadelac.framework.blade.core.dispatch.MessageBlock;
 import cadelac.framework.blade.core.message.Message;
-import cadelac.framework.blade.core.message.json.JsonFormat;
 import cadelac.framework.blade.core.object.ObjectPopulator;
-import cadelac.framework.pubsub.BusChannel;
 import cadelac.framework.pubsub.ChannelId;
 import cadelac.framework.pubsub.Utility;
 import cadelac.framework.pubsub.message.base.HasEvent;
@@ -36,93 +37,61 @@ public interface PacketMsg
 		// reserved; used for routing through a gateway
 		, HasGatewayAddress {
 
-	default PacketMsg publish(final ChannelId channel_) 
-			throws Exception {
-		
-		final String jsonEncoded = JsonFormat.encode(this);
-		final String channelName = channel_.getId();
-		final String formattedText = String.format(
-				"app %s >>> publish %s on channel %s: %s"
-				, Framework.getApplication().getId()
+	
+	
+	String STORE_ENTRY_PACKET_TRAIL = "storeEntryPacketTrail";
+
+
+	default PacketMsg publish(
+			final String subscriberName_
+			, final ChannelId channelId_) 
+					throws Exception {
+		Utility.pubChan(
+				subscriberName_
 				, getEvent()
-				, channelName
-				, jsonEncoded);
-		
-		Utility.monitor(formattedText);
-		logger.info(formattedText);
-		
-		BusChannel.getPublisher().publish(
-				channelName
-				, jsonEncoded);
-		
-		return this;
-	}
-	default PacketMsg publish(final String subscriberName_, final ChannelId channel_) 
-			throws Exception {
-		
-		final String jsonEncoded = JsonFormat.encode(this);
-		final String channelName = channel_.getId();
-		final String formattedText = String.format(
-				"app %s >>> publish %s to %s on channel %s: %s"
-				, Framework.getApplication().getId()
-				, getEvent()
-				, subscriberName_
-				, channelName
-				, jsonEncoded);
-		
-		Utility.monitor(formattedText);
-		logger.info(formattedText);
-		
-		BusChannel.getPublisher().publish(
-				channelName
-				, subscriberName_
-				, jsonEncoded);
-		
+				, channelId_.getId()
+				, this);
 		return this;
 	}
 	
-	// surveilled publish
-	default PacketMsg surpub(final String subscriberName_, final ChannelId channel_) 
-			throws Exception {
-		
-		final String jsonEncoded = JsonFormat.encode(this);
-		final String channelName = channel_.getId();
-		final String formattedText = String.format(
-				"app %s >>> surveilled publish %s to %s on channel %s: %s"
-				, Framework.getApplication().getId()
-				, getEvent()
-				, subscriberName_
-				, channelName
-				, jsonEncoded);
-		logger.info(formattedText);
-		
-		BusChannel.getPublisher().publish(
-				channelName
-				, subscriberName_
-				, jsonEncoded);
-		Utility.surpub(jsonEncoded);
-		
+	
+	default PacketMsg publish(
+			final ChannelId channelId_) 
+					throws Exception {
+		publish(null, channelId_);
 		return this;
 	}
-	// surveilled publish
-	default PacketMsg surpub(final ChannelId channel_) 
-			throws Exception {
+	
+	
+
+	default PacketMsg surpub(
+			final String subscriberName_
+			, final ChannelId channelId_) 
+					throws Exception {
+		Utility.surpub(
+				subscriberName_
+				, this
+				, channelId_);
+		return this;
+	}
+
+	
+	default PacketMsg surpub(
+			final ChannelId channelId_)
+					throws Exception {
+		surpub(null, channelId_);
+		return this;
+	}
+	
+	
+	default PacketMsg audit(
+			final String channel_) 
+					throws Exception {
 		
-		final String jsonEncoded = JsonFormat.encode(this);
-		final String channelName = channel_.getId();
-		final String formattedText = String.format(
-				"app %s >>> surveilled publish %s on channel %s: %s"
-				, Framework.getApplication().getId()
-				, getEvent()
-				, channelName
-				, jsonEncoded);
-		logger.info(formattedText);
-		
-		BusChannel.getPublisher().publish(
-				channelName
-				, jsonEncoded);
-		Utility.surpub(jsonEncoded);
-		
+		final MessageBlock<PacketMsg> messageBlock = $store.getValue(
+		        		STORE_ENTRY_PACKET_TRAIL);
+		if (messageBlock!=null)
+			messageBlock.block(channel_, this);
 		return this;
 	}
 	
@@ -156,6 +125,8 @@ public interface PacketMsg
 		packet.populateTimestamp();
 		return packet;
 	}
+
+	
 	
 	
 	static final Logger logger = Logger.getLogger(PacketMsg.class);

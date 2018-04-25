@@ -6,11 +6,8 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 
-import cadelac.framework.blade.Framework;
-
 import cadelac.framework.blade.core.Utilities;
 import cadelac.framework.blade.core.code.generator.LowLevelGenerator;
-import cadelac.framework.blade.core.dispatch.MessageBlock;
 import cadelac.framework.pubsub.message.MsgDecoder;
 import cadelac.framework.pubsub.message.PacketMsg;
 import de.jackwhite20.japs.client.sub.impl.handler.annotation.Channel;
@@ -22,9 +19,6 @@ import de.jackwhite20.japs.client.sub.impl.handler.annotation.Value;
 
 public class ChannelHandlerGenerator extends LowLevelGenerator {
 	
-	
-	
-	public static final String STORE_ENTRY_PACKET_TRAIL = "storeEntryPacketTrail";
 	
 	
 	public ChannelHandlerGenerator() {
@@ -57,12 +51,10 @@ public class ChannelHandlerGenerator extends LowLevelGenerator {
 		addImport(JSONObject.class);
 		
 		addLinebreak(1);
-		
-		addImport(Framework.class);
+
 		addImport(InstantiatedChannelHandler.class);
 		addImport(MsgDecoder.class);
 		addImport(PacketMsg.class);
-		addImport(MessageBlock.class);
 
 
 		addLinebreak(1);
@@ -85,12 +77,16 @@ public class ChannelHandlerGenerator extends LowLevelGenerator {
 		addCode(code -> {
 			code.append(String.format(
 					"/* AUTOMATICALLY GENERATED CODE BY FRAMEWORK -- DO NOT EDIT !!! */\n\n"
-					+ "@Channel(\"%s\")\n" //1
+					+ "@Channel(%s.CHANNEL)\n" //1
 					+ "public class %s extends %s {\n\n" //2 //3
-					+ "  public static final String EVENT_KEY = \"Event\";\n\n"
-					, _channelInfoAnnotation.value() //1
+					+ "  public static final String EVENT_KEY = \"Event\";\n"
+					+ "  public static final String CHANNEL = \"%s\";\n\n" //4
+
+					, getClassname() //1
 					, getClassname() //2
-					, InstantiatedChannelHandler.class.getSimpleName())); //3
+					, InstantiatedChannelHandler.class.getSimpleName() //3
+					, _channelInfoAnnotation.value() //4
+					)); 
 		});
 
 		for (Input input : _acceptAnnotation.value()) {			
@@ -105,18 +101,13 @@ public class ChannelHandlerGenerator extends LowLevelGenerator {
 								+ "        MsgDecoder.directDecodePacket(\n"
 								+ "                jsonObject\n"
 								+ "                , %s.class);\n" //5
-								+ "    MessageBlock<PacketMsg> messageBlock =\n"
-								+ "        Framework.$store.getValue(\"%s\");\n" //6
-								+ "    if (messageBlock!=null)\n"
-								+ "        messageBlock.block(\"%s\", packet);\n" //7
+								+ "    packet.audit(CHANNEL);\n"
 								+ "    %s.process(packet);\n" //4
 								+ "  }\n\n\n"
 								, input.type().getSimpleName()    //1
 								, input.type().getSimpleName()    //2
 								, input.type().getSimpleName()    //3
 								, input.type().getSimpleName()    //5
-								, STORE_ENTRY_PACKET_TRAIL //6
-								, _channelInfoAnnotation.value() //7
 								, input.handler().getSimpleName() //4
 						));			
 			});
