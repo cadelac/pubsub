@@ -2,12 +2,15 @@ package cadelac.framework.pubsub;
 
 import org.apache.log4j.Logger;
 
+import static cadelac.framework.blade.Framework.$dispatch;
 import cadelac.framework.blade.app.ApplicationSimple;
 import cadelac.framework.blade.core.Utilities;
 import cadelac.framework.blade.core.config.Configurator;
 import cadelac.framework.blade.core.exception.FrameworkException;
 import cadelac.framework.pubsub.message.base.HasDuration;
 import cadelac.framework.pubsub.message.system.LifecycleMsg;
+import de.jackwhite20.japs.client.cache.PubSubCache;
+import de.jackwhite20.japs.client.cache.PubSubCacheFactory;
 import de.jackwhite20.japs.client.pub.Publisher;
 import de.jackwhite20.japs.client.pub.PublisherFactory;
 import de.jackwhite20.japs.client.sub.Subscriber;
@@ -33,22 +36,23 @@ public abstract class PubSubApp extends ApplicationSimple {
 		
 		BusChannel.setPublisher(createPublisher(busConfig));
 		BusChannel.setSubscriber(createSubscriber(getId(), busConfig));
+		BusChannel.setPubSubCache(createPubSubCache(busConfig));
+
 		
 		initSystemChannel();
 		initScriptChannel();
 	}
 	
-	protected final static long HEARTBEAT_PERIOD = 15 * HasDuration.ONE_SECOND;
+	public final static long HEARTBEAT_PERIOD = 5 * HasDuration.ONE_SECOND;
 	
 	protected boolean shouldSubscribeSystemChannel() { return true; }
+	protected boolean shouldSubscribeScriptChannel() { return true; }
+
 	protected boolean shouldPublishLifecycleUP() { return true; }
 	protected boolean shouldPublishHeartbeat() { return true; }
 
-	
-	protected boolean shouldSubscribeScriptChannel() { return true; }
-
-	protected abstract void subscribeSystemChannel();
-	protected abstract void subscribeScriptChannel();
+	protected void subscribeSystemChannel() {}
+	protected void subscribeScriptChannel() {}
 	
 	
 	private void initSystemChannel() throws Exception {
@@ -66,7 +70,7 @@ public abstract class PubSubApp extends ApplicationSimple {
 					LifecycleMsg.create(LifecycleEvent.HEARTBEAT);
 
 			// publish periodic heartbeat
-			heartbeat.push(
+			$dispatch.push(
 					HEARTBEAT_PERIOD
 					, 0L // delay
 					, () -> heartbeat.wrap().publish(BusChannel.SYSTEM));
@@ -97,6 +101,12 @@ public abstract class PubSubApp extends ApplicationSimple {
 		return repeatedAttemptSubscriber(subscriberName_, busConfig_);
 	}
 	
+	private PubSubCache createPubSubCache(
+			final BusConfig busConfig_) 
+					throws InterruptedException {
+		return repeatedAttemptPubSubCache(busConfig_);
+	}
+	
 	private Publisher repeatedAttemptPublisher(
 			final BusConfig busConfig_) 
 					throws InterruptedException {
@@ -124,16 +134,44 @@ public abstract class PubSubApp extends ApplicationSimple {
 					throws InterruptedException {
 		while (true) {
 			try {
-				return SubscriberFactory.create(
-						busConfig_.getHost()
-						, busConfig_.getPort()
-						, subscriberName_);
+				Subscriber subscriber = 
+						SubscriberFactory.create(
+								busConfig_.getHost()
+								, busConfig_.getPort()
+								, subscriberName_);
+				logger.info(String.format(
+						"created subscriber %s at %s:%d"
+						, subscriberName_
+						, busConfig_.getHost()
+						, busConfig_.getPort()));
+				return subscriber;
 			}
 			catch (ConnectException e_) {
 				// sleep and try again
 				logger.warn(String.format(
 						"failed to create subscriber %s at %s:%d -- will sleep/retry"
 						, subscriberName_
+						, busConfig_.getHost()
+						, busConfig_.getPort()));
+				Utilities.logException(e_, logger);
+				Thread.sleep(HEARTBEAT_PERIOD);
+			}
+		}
+	}
+	
+	private PubSubCache repeatedAttemptPubSubCache(
+			final BusConfig busConfig_) 
+					throws InterruptedException {
+		while (true) {
+			try {
+				return PubSubCacheFactory.create(
+						busConfig_.getHost()
+						, busConfig_.getPort());
+			}
+			catch (ConnectException e_) {
+				// sleep and try again
+				logger.warn(String.format(
+						"failed to create cache for %s:%d -- will sleep/retry"
 						, busConfig_.getHost()
 						, busConfig_.getPort()));
 				Utilities.logException(e_, logger);

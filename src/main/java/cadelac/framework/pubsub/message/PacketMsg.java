@@ -18,6 +18,7 @@ import cadelac.framework.pubsub.message.base.HasReference;
 import cadelac.framework.pubsub.message.base.HasSequenceId;
 import cadelac.framework.pubsub.message.base.HasTimestamp;
 import cadelac.framework.pubsub.message.base.HasToken;
+import de.jackwhite20.japs.client.cache.Cacheable;
 
 public interface PacketMsg 
 		extends Message
@@ -35,7 +36,9 @@ public interface PacketMsg
 		, HasReference
 				
 		// reserved; used for routing through a gateway
-		, HasGatewayAddress {
+		, HasGatewayAddress 
+		
+		, Cacheable { // for pubsub cache
 
 	
 	
