@@ -7,7 +7,6 @@ import org.apache.log4j.Logger;
 import static cadelac.framework.blade.Framework.$dispatch;
 import cadelac.framework.blade.core.Utilities;
 import cadelac.framework.blade.core.state.StateId;
-import cadelac.framework.pubsub.BusChannel;
 import cadelac.framework.pubsub.LifecycleEvent;
 import cadelac.framework.pubsub.message.PacketMsg;
 import cadelac.framework.pubsub.message.system.LifecycleMsg;

@@ -57,7 +57,6 @@ public class BusChannel {
 				consumer_.accept(_packet);
 			} 
 			catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		});

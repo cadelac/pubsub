@@ -5,8 +5,6 @@ import org.apache.log4j.Logger;
 import cadelac.framework.blade.core.exception.FrameworkException;
 import cadelac.framework.pubsub.BusChannel;
 import cadelac.framework.pubsub.PubSubApp;
-import cadelac.framework.pubsub.message.base.HasApplicationId;
-import cadelac.framework.pubsub.message.system.Ping;
 import cadelac.framework.pubsub.prog.meter.handler.SystemChannelHandler;
 
 /**
@@ -29,12 +27,6 @@ public class App extends PubSubApp {
 		
 		super.init();
 
-		/*
-		HasApplicationId responder = HasApplicationId.create("orderManagerApp");
-		HasApplicationId initiator = HasApplicationId.create(APP_NAME);
-		Ping.create(responder, initiator).wrap().publish(BusChannel.SYSTEM);
-		*/
-		
 		Script.simulate();
 	}
 
