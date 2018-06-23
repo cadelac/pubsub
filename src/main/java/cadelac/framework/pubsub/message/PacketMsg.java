@@ -98,6 +98,17 @@ public interface PacketMsg
 		return this;
 	}
 	
+	default PacketMsg audit(
+			final boolean isSaved_
+			, final String channel_) 
+					throws Exception {
+		if (isSaved_) {
+			this.audit(channel_);
+		}
+		return this;
+	}
+	
+	
 	
 	
 	static PacketMsg createEventMsg(

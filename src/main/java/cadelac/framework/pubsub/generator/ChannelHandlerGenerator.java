@@ -101,13 +101,14 @@ public class ChannelHandlerGenerator extends LowLevelGenerator {
 								+ "        MsgDecoder.directDecodePacket(\n"
 								+ "                jsonObject\n"
 								+ "                , %s.class);\n" //5
-								+ "    packet.audit(CHANNEL);\n"
+								+ "    packet.audit(%s, CHANNEL);\n" // 6
 								+ "    %s.process(packet);\n" //4
 								+ "  }\n\n\n"
 								, input.type().getSimpleName()    //1
 								, input.type().getSimpleName()    //2
 								, input.type().getSimpleName()    //3
 								, input.type().getSimpleName()    //5
+								, (input.audit()) ? "true" : "false"   // 6
 								, input.handler().getSimpleName() //4
 						));			
 			});
