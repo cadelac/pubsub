@@ -61,6 +61,7 @@ public abstract class PubSubApp extends ApplicationSimple {
 		if (this.shouldPublishLifecycleUP()) 
 			LifecycleMsg.create(LifecycleEvent.UP)
 			.wrap()
+			.audit(BusChannel.SYSTEM.getId())
 			.publish(BusChannel.SYSTEM);
 
 		
