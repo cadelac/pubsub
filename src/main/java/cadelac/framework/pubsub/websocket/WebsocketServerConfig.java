@@ -89,7 +89,7 @@ public class WebsocketServerConfig extends WebsocketConfig {
 	}
 	
 
-	private final Map<String,Lookup> LOOKUP_MAP = 
+	private static final Map<String,Lookup> LOOKUP_MAP = 
 			new ConcurrentHashMap<String,Lookup>();
 	
 	
