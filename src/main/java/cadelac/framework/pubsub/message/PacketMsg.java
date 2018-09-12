@@ -2,8 +2,6 @@ package cadelac.framework.pubsub.message;
 
 import static cadelac.framework.blade.Framework.$store;
 
-import org.apache.log4j.Logger;
-
 import cadelac.framework.blade.Framework;
 import cadelac.framework.blade.core.dispatch.MessageBlock;
 import cadelac.framework.blade.core.message.Message;
@@ -44,6 +42,19 @@ public interface PacketMsg
 	
 	String STORE_ENTRY_PACKET_TRAIL = "storeEntryPacketTrail";
 
+	default PayloadMsg checkedGetPayload(
+			ChannelId channelId_) 
+					throws Exception {
+		final PayloadMsg payload = getPayload();
+		if (payload == null) {
+			// publish error message
+			Utility.publishExceptionResponse(
+					"Error: malformed packet; missing payload"
+					, this
+					, channelId_);
+		}
+		return payload;
+	}
 
 	default PacketMsg publish(
 			final String subscriberName_

@@ -4,10 +4,22 @@ import org.apache.log4j.Logger;
 
 import cadelac.framework.blade.Framework;
 import cadelac.framework.blade.core.message.json.JsonFormat;
+import cadelac.framework.pubsub.message.ExceptionMsg;
 import cadelac.framework.pubsub.message.PacketMsg;
 import de.jackwhite20.japs.client.pub.Publisher;
 
 public class Utility {
+	
+	public static void publishExceptionResponse(
+			final String exceptionText_
+			, final PacketMsg packet_
+			, final ChannelId channelId_) 
+					throws Exception {
+		logger.warn(exceptionText_);
+		ExceptionMsg.create(exceptionText_)
+				.wrap(packet_)
+				.publish(channelId_);
+	}
 
 	/**
 	 * publish to monitor channel
