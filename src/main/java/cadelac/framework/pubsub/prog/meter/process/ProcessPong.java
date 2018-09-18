@@ -3,8 +3,8 @@ package cadelac.framework.pubsub.prog.meter.process;
 import static cadelac.framework.blade.Framework.$dispatch;
 
 import java.util.Date;
-
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import cadelac.framework.blade.core.Utilities;
 import cadelac.framework.blade.core.state.StateId;
@@ -50,6 +50,6 @@ public class ProcessPong {
 				});
 	}
 	
-	public static final Logger logger = Logger.getLogger(ProcessPong.class);
+	public static final Logger logger = LogManager.getLogger(ProcessPong.class);
 
 }

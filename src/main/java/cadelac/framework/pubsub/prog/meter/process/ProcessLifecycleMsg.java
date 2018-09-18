@@ -1,8 +1,8 @@
 package cadelac.framework.pubsub.prog.meter.process;
 
 import java.util.Date;
-
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import static cadelac.framework.blade.Framework.$dispatch;
 import cadelac.framework.blade.core.Utilities;
@@ -64,5 +64,5 @@ public class ProcessLifecycleMsg {
 	
 	
 	
-	public static final Logger logger = Logger.getLogger(ProcessLifecycleMsg.class);		
+	public static final Logger logger = LogManager.getLogger(ProcessLifecycleMsg.class);		
 }

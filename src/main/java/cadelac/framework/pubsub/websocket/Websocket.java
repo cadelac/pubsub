@@ -4,8 +4,8 @@ import java.io.IOException;
 
 import javax.websocket.EncodeException;
 import javax.websocket.Session;
-
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import cadelac.framework.blade.comm.websocket.WebsocketConnect;
 import cadelac.framework.blade.core.Utilities;
@@ -66,5 +66,5 @@ public class Websocket extends WebsocketConnect {
     	return (websocketSession_==null) ? "<null>" : websocketSession_.getId();
     }
 	
-	private static final Logger logger = Logger.getLogger(Websocket.class);
+	private static final Logger logger = LogManager.getLogger(Websocket.class);
 }
