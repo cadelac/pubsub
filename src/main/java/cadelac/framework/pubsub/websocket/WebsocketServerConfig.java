@@ -6,8 +6,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.websocket.CloseReason;
 import javax.websocket.Session;
-
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * Base server-side configuration class for Websocket
@@ -93,5 +93,5 @@ public class WebsocketServerConfig extends WebsocketConfig {
 			new ConcurrentHashMap<String,Lookup>();
 	
 	
-	private static final Logger logger = Logger.getLogger(WebsocketServerConfig.class);
+	private static final Logger logger = LogManager.getLogger(WebsocketServerConfig.class);
 }

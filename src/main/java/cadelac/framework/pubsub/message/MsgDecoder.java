@@ -6,8 +6,8 @@ import java.util.Map;
 
 import javax.json.Json;
 import javax.json.JsonObject;
-
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.json.JSONObject;
 
 import cadelac.framework.blade.Framework;
@@ -176,5 +176,5 @@ public class MsgDecoder {
 	private static final Map<String,Symbol<? extends PayloadMsg>> SYMBOL_TABLE = 
 			new HashMap<String,Symbol<? extends PayloadMsg>>();
 	
-	private static final Logger logger = Logger.getLogger(MsgDecoder.class);
+	private static final Logger logger = LogManager.getLogger(MsgDecoder.class);
 }

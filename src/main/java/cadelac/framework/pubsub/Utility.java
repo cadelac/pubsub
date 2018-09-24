@@ -1,6 +1,6 @@
 package cadelac.framework.pubsub;
-
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import cadelac.framework.blade.Framework;
 import cadelac.framework.blade.core.message.json.JsonFormat;
@@ -123,5 +123,5 @@ public class Utility {
 	}
 	
 	
-	static final Logger logger = Logger.getLogger(Utility.class);
+	static final Logger logger = LogManager.getLogger(Utility.class);
 }

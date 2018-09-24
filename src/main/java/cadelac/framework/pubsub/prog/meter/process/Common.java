@@ -1,8 +1,8 @@
 package cadelac.framework.pubsub.prog.meter.process;
 
 import static cadelac.framework.blade.Framework.$dispatch;
-
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import cadelac.framework.blade.Framework;
 import cadelac.framework.blade.core.Utilities;
@@ -114,5 +114,5 @@ public class Common {
 				, (MeterState state) -> recurring(state));
 	}
 	
-	private static final Logger logger = Logger.getLogger(Common.class);
+	private static final Logger logger = LogManager.getLogger(Common.class);
 }

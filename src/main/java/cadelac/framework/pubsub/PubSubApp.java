@@ -1,10 +1,9 @@
 package cadelac.framework.pubsub;
-
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import static cadelac.framework.blade.Framework.$dispatch;
 import cadelac.framework.blade.app.ApplicationSimple;
-import cadelac.framework.blade.core.Utilities;
 import cadelac.framework.blade.core.config.Configurator;
 import cadelac.framework.blade.core.exception.FrameworkException;
 import cadelac.framework.pubsub.message.base.HasDuration;
@@ -16,7 +15,6 @@ import de.jackwhite20.japs.client.pub.PublisherFactory;
 import de.jackwhite20.japs.client.sub.Subscriber;
 import de.jackwhite20.japs.client.sub.SubscriberFactory;
 import de.jackwhite20.japs.shared.net.ConnectException;
-
 
 public abstract class PubSubApp extends ApplicationSimple {
 
@@ -123,7 +121,7 @@ public abstract class PubSubApp extends ApplicationSimple {
 						"failed to create publisher at %s:%d -- will sleep/retry"
 						, busConfig_.getHost()
 						, busConfig_.getPort()));
-				Utilities.logException(e_, logger);
+				//Utilities.logException(e_, logger);
 				Thread.sleep(HEARTBEAT_PERIOD);
 			}
 		}
@@ -154,7 +152,7 @@ public abstract class PubSubApp extends ApplicationSimple {
 						, subscriberName_
 						, busConfig_.getHost()
 						, busConfig_.getPort()));
-				Utilities.logException(e_, logger);
+				//Utilities.logException(e_, logger);
 				Thread.sleep(HEARTBEAT_PERIOD);
 			}
 		}
@@ -174,13 +172,13 @@ public abstract class PubSubApp extends ApplicationSimple {
 				logger.warn(String.format(
 						"failed to create cache for %s:%d -- will sleep/retry"
 						, busConfig_.getHost()
-						, busConfig_.getPort()));
-				Utilities.logException(e_, logger);
+						, busConfig_.getPort()));				
+				//Utilities.logException(e_, logger);
 				Thread.sleep(HEARTBEAT_PERIOD);
 			}
 		}
 	}
 	
 	
-	public static final Logger logger = Logger.getLogger(PubSubApp.class);
+	public static final Logger logger = LogManager.getLogger(PubSubApp.class);
 }

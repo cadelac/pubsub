@@ -1,8 +1,8 @@
 package cadelac.framework.pubsub.websocket;
 
 import javax.websocket.Session;
-
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import cadelac.framework.blade.core.Identified;
 import cadelac.framework.blade.core.IdentifiedBase;
@@ -39,5 +39,5 @@ public class WebsocketConfig
 				, JsonFormat.encodeOnly(packetRequest_)));
 	}
 
-	private static final Logger logger = Logger.getLogger(WebsocketConfig.class);
+	private static final Logger logger = LogManager.getLogger(WebsocketConfig.class);
 }

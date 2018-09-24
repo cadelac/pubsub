@@ -1,6 +1,6 @@
 package cadelac.framework.pubsub.prog.monitor;
-
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import cadelac.framework.blade.core.exception.FrameworkException;
 import cadelac.framework.pubsub.BusChannel;
@@ -125,5 +125,5 @@ public class App extends PubSubApp {
 	}
 	
 	
-	private static final Logger logger = Logger.getLogger(App.class);
+	private static final Logger logger = LogManager.getLogger(App.class);
 }
