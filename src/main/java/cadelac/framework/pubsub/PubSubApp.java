@@ -106,14 +106,44 @@ public abstract class PubSubApp extends ApplicationSimple {
 		return repeatedAttemptPubSubCache(busConfig_);
 	}
 	
+//	private Publisher repeatedAttemptPublisher(
+//			final BusConfig busConfig_) 
+//					throws InterruptedException {
+//		Publisher p = null;
+//		try {
+//			p = PublisherFactory.create(busConfig_.getHost(), busConfig_.getPort());
+//			
+//			while(!p.connected()) {
+//				System.out.println("wait");
+//				Thread.sleep(HEARTBEAT_PERIOD);
+//			}
+//			
+//		} catch (ConnectException e_) {
+//			// sleep and try again
+//			logger.warn(String.format(
+//					"failed to create publisher at %s:%d -- will sleep/retry"
+//					, busConfig_.getHost()
+//					, busConfig_.getPort()));
+//			//Utilities.logException(e_, logger);
+//			Thread.sleep(HEARTBEAT_PERIOD);
+//		}
+//		
+//		System.out.println("Publisher ok");
+//		return p;
+//	}
+	
 	private Publisher repeatedAttemptPublisher(
 			final BusConfig busConfig_) 
 					throws InterruptedException {
+		
+		Publisher p = null;
 		while (true) {
 			try {
-				return PublisherFactory.create(
+				System.out.println("repeatedAttemptPublisher " + Integer.toString(hashCode()));
+				p = PublisherFactory.create(
 						busConfig_.getHost()
 						, busConfig_.getPort());
+				return p;
 			}
 			catch (ConnectException e_) {
 				// sleep and try again
@@ -122,7 +152,12 @@ public abstract class PubSubApp extends ApplicationSimple {
 						, busConfig_.getHost()
 						, busConfig_.getPort()));
 				//Utilities.logException(e_, logger);
-				Thread.sleep(HEARTBEAT_PERIOD);
+				//Thread.sleep(HEARTBEAT_PERIOD);
+				if (p != null) {
+					
+				}
+				System.out.println("sleep");
+				Thread.sleep(500);
 			}
 		}
 	}
@@ -133,6 +168,7 @@ public abstract class PubSubApp extends ApplicationSimple {
 					throws InterruptedException {
 		while (true) {
 			try {
+				System.out.println("repeatedAttemptSubscriber " + Integer.toString(hashCode()));
 				Subscriber subscriber = 
 						SubscriberFactory.create(
 								busConfig_.getHost()
@@ -163,6 +199,7 @@ public abstract class PubSubApp extends ApplicationSimple {
 					throws InterruptedException {
 		while (true) {
 			try {
+				System.out.println("repeatedAttemptPubSubCache " + Integer.toString(hashCode()));
 				return PubSubCacheFactory.create(
 						busConfig_.getHost()
 						, busConfig_.getPort());

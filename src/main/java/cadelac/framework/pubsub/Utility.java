@@ -68,7 +68,8 @@ public class Utility {
 			publisher.publish(channelName_, subscriberName_, jsonEncoded_);
 		}
 		else {
-			publisher.publish(channelName_, jsonEncoded_);
+			if(publisher.connected())
+				publisher.publish(channelName_, jsonEncoded_);
 		}
 	}
 	public static void pubChan(

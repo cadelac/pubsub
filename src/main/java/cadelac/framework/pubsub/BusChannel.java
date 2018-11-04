@@ -14,7 +14,9 @@ public class BusChannel {
 
 	public static <H extends PubsubChannelHandler> void subscribe(
 			final Class<H> channelHandler_) {
-		BusChannel.getSubscriber().subscribeMulti(channelHandler_);
+		Subscriber s =BusChannel.getSubscriber();
+		if(s.connected())
+			s.subscribeMulti(channelHandler_);
 	}
 	public static <H extends PubsubChannelHandler> void unsubscribe(
 			final String channelName_) {
