@@ -30,9 +30,14 @@ public class Utility {
 			final String jsonEncoded_) 
 					throws Exception {
 		// non-directed to subscriber
-		BusChannel.getPublisher().publish(
-				BusChannel.MONITOR.getId()
-				, jsonEncoded_);
+		final Publisher publisher = BusChannel.getPublisher();
+		if(publisher != null)
+			if(publisher.connected())
+				publisher.publish(BusChannel.MONITOR.getId(), jsonEncoded_);
+			else
+				logger.error("Cannot publish, publisher is null. Message:" + jsonEncoded_);
+		else
+			logger.error("Cannot publish, publisher is not connected. Message:" + jsonEncoded_);
 	}
 
 	/**
@@ -64,14 +69,22 @@ public class Utility {
 				, channelName_
 				, jsonEncoded_));
 		
-		if (subscriberName_!=null && !subscriberName_.isEmpty()) {
-			publisher.publish(channelName_, subscriberName_, jsonEncoded_);
-		}
-		else {
-			if(publisher.connected())
-				publisher.publish(channelName_, jsonEncoded_);
+		if(publisher != null) {
+			if(publisher.connected()) {
+				if (subscriberName_!=null && !subscriberName_.isEmpty()) {
+					publisher.publish(channelName_, subscriberName_, jsonEncoded_);
+				}
+				else {
+					publisher.publish(channelName_, jsonEncoded_);
+				}
+			} else {
+				logger.error("Cannot publish, publisher is null. Message:" + jsonEncoded_);
+			}
+		} else {
+			logger.error("Cannot publish, publisher is not connected. Message:" + jsonEncoded_);
 		}
 	}
+	
 	public static void pubChan(
 			final String subscriberName_
 			, final String event_
